@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList, SafeAreaView } from 'react-native';
 import ProductButton from '../components/productButton';
 import HeaderBar from '../components/headerBar';
 import BackButton from '../components/backButton';
@@ -21,7 +21,7 @@ const ProductScreen = ({ route, navigation }) => {
   }, [category]); // Refetch data whenever the category changes
 
   return (
-    <View style={styles.screen}>
+    <SafeAreaView style={styles.screen}>
 
       <View style={styles.headerBar}>
         <HeaderBar title={category}></HeaderBar>
@@ -49,7 +49,7 @@ const ProductScreen = ({ route, navigation }) => {
       <View style= {styles.buttonContainer}>
         <BackButton />
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

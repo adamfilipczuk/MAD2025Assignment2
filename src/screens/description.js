@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, FlatList } from 'react-native';
+import { View, Text, StyleSheet, Image, FlatList, SafeAreaView } from 'react-native';
 import colors from "../style/colors.js";
 import BackButton from '../components/backButton.js';
 import AddToCartButton from '../components/addToCart.js';
@@ -63,7 +63,7 @@ const Description = ({ route }) => {
       renderItem: (
         <View style={styles.buttonContainer}>
           <BackButton />
-          <AddToCartButton />
+          <AddToCartButton title ={product.title} id={product.id} price={product.price} />
         </View>
       ),
     },
@@ -84,7 +84,7 @@ const Description = ({ route }) => {
   ];
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.headerBar}>
         <HeaderBar title={"Description"} />
       </View>
@@ -94,7 +94,7 @@ const Description = ({ route }) => {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => item.renderItem}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -102,6 +102,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+    paddingHorizontal: 20
   },
   header: {
     fontSize: 24,

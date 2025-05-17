@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, SafeAreaView } from 'react-native';
 import CategoryButton from '../components/categoryButton';
 import HeaderBar from '../components/headerBar';
 import { StatusBar } from 'react-native';
@@ -26,7 +26,7 @@ const Home = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.screen}>
+    <SafeAreaView style={styles.screen}>
       <StatusBar barStyle="dark-content" backgroundColor="white" />
       
       <View style={styles.headerBar}>
@@ -47,7 +47,7 @@ const Home = ({ navigation }) => {
           ))}
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
