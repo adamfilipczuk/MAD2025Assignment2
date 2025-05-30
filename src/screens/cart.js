@@ -1,18 +1,25 @@
 import React from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, SafeAreaView, Button, Alert } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
-import { increaseQuantity, decreaseQuantity, removeFromCart } from '../components/cartSlice.js';
+import { increaseQuantity, decreaseQuantity, removeFromCart, clearCart } from '../components/cartSlice.js';
+import { addOrder } from '../components/orderSlice.js';
+
 
 const Cart = () => {
   const cartItems = useSelector(state => state.cart);
   const dispatch = useDispatch();
 
+  // Calculate total price of all items
+  const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.count, 0);
+
+  //uses the cartslice compoenent to adjust items in the appropriate object via order id
   const renderItem = ({ item }) => (
     <View style={styles.itemContainer}>
       <Text style={styles.itemText}>Name: {item.title}</Text>
-      <Text style={styles.itemText}>Price: ${item.price}</Text>
+      <Text style={styles.itemText}>Price: ${item.price.toFixed(2)}</Text>
       <Text style={styles.itemText}>Count: {item.count}</Text>
-
+      <Text style={styles.itemText}>Total: ${(item.price * item.count).toFixed(2)}</Text>
+      
       <View style={styles.buttonsContainer}>
         <TouchableOpacity
           style={styles.button}
@@ -37,6 +44,27 @@ const Cart = () => {
       </View>
     </View>
   );
+  const handleCheckout = () => {
+ 
+  // Calculate total count of all items
+  const totalCount = cartItems.reduce((sum, item) => sum + item.count, 0);
+
+  // create a new object
+  const newOrder = {
+    id: Date.now(),        // unique order id
+    items: cartItems,
+    item_numbers: totalCount,     
+    total_price: totalPrice,      
+    isPaid: false,
+    isDelivered: false,
+    createdAt: new Date().toISOString(),
+  };
+  // passing the new order to the slicer and notifying user
+  dispatch(addOrder(newOrder));
+  dispatch(clearCart());
+
+  Alert.alert('Order placed!', `Order #${newOrder.id} has been created.`);
+};
 
   if (cartItems.length === 0) {
     return (
@@ -47,13 +75,17 @@ const Cart = () => {
   }
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ flex: 1 }}>
       <FlatList
         data={cartItems}
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderItem}
         contentContainerStyle={styles.listContent}
       />
+      <View style={styles.totalContainer}>
+        <Text style={styles.totalText}>Total Price: ${totalPrice.toFixed(2)}</Text>
+        <Button title="Check Out" onPress={handleCheckout} />
+      </View>
     </SafeAreaView>
   );
 };
@@ -61,6 +93,7 @@ const Cart = () => {
 const styles = StyleSheet.create({
   listContent: {
     padding: 20,
+    paddingBottom: 80,
   },
   itemContainer: {
     borderWidth: 1,
@@ -105,6 +138,18 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  totalContainer: {
+    padding: 20,
+    borderTopWidth: 1,
+    borderColor: '#ccc',
+    backgroundColor: '#fff',
+  },
+  totalText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'right',
+    marginBottom: 10,
   },
 });
 
